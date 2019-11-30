@@ -1,20 +1,68 @@
 const express = require("express");
+const bodyParser = require("body-parser");
+
 const app = express();
 
+// MIDDLEWARE
+app.use(bodyParser.json()); // in order to send data to the front end, it must be parsed
+
+const database = {
+  users: [
+    {
+      id: '123',
+      name: 'John',
+      email: 'john@gmail.com',
+      password: 'cookies',
+      entries: 0,
+      joined: new Date(),
+    },
+    {
+      id: '124',
+      name: 'Sally',
+      email: 'sally@gmail.com',
+      password: 'bananas',
+      entries: 0,
+      joined: new Date(),
+    },
+  ]
+}
+
 app.get("/", (req, res) => {
-  res.send("res send is sending this from app dot get"); // verified via Postman
+  // res.send("res send is sending this from app dot get"); // verified via Postman
+  res.send(database.users);
 });
+
+app.post("/signin", (req, res) => {
+  // res.send("signing in...");  // but we need it in json
+  // the user's response will come back in the request. This response needs to be verified it matches
+  // ** BODY-PARCER (remember, to read the request, we need to parce it using body-parcer) **
+  if (req.body.email === database.users[0].email && req.body.password === database.users[0].password) {
+    res.json("signin success");
+  } else {
+    res.status(400).json("error logging in");
+  }
+});
+
+// When a new user is created: (the user registration form requires a name, email and password)
+app.post('/register', (req, res) => {
+  // grab the information from req.body
+  const { email, password, name } = req.body;
+  // to create a new user
+  database.users.push({
+    id: '125',
+    // name: 'John',
+    name: name, // making use of object destructuring
+    email: email,
+    password: password,
+    entries: 0,
+    joined: new Date()
+  });
+  // ALWAYS REMEMBER THE RESPONSE (here, grab the last item in the array)
+  res.json(database.users[database.users.length - 1]);
+
+})
 
 app.listen(3000, () => {
-  console.log("breaker, breaker, sanity-check to start working on the backend");
+  console.log("sanity check; server listening on port 3000");
 });
 
-/*
-The basic thinking for the layout: (what routes the app will need)
-ROUTES:
-- /, a root route that responds it is working off the route folder
-- /signin --> POST REQUEST(because you don't want to send a password in the url; instead it needs to be sent through the body)
-- /register (POST REQUEST: want to ADD data to the database)
-- /profile/:userId (GET REQUEST: returns the user and their information)
-- /image (PUT REQUEST: updating the user's image along with their ranking)
-*/
