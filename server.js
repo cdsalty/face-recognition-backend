@@ -45,10 +45,10 @@ app.post("/signin", (req, res) => {
 
 // When a new user is created: (the user registration form requires a name, email and password)
 app.post('/register', (req, res) => {
-  // grab the information from req.body
-  const { email, password, name } = req.body;
+  // get email password and name from req.body
+  const { email, password, name } = req.body; // information the user is submitting
   // to create a new user
-  database.users.push({
+  database.users.push({ // get the user's info and add it to the database
     id: '125',
     // name: 'John',
     name: name, // making use of object destructuring
@@ -58,23 +58,39 @@ app.post('/register', (req, res) => {
     joined: new Date()
   });
   // ALWAYS REMEMBER THE RESPONSE (here, grab the last item in the array)
-  res.json(database.users[database.users.length - 1]);
+  res.json(database.users[database.users.length - 1]);  // the response is the new user created
 })
-
+// Get the user for their homepage
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
   let found = false;
-  database.users.forEach(user => {
+  database.users.forEach(user => {  // forEach; not creating a new array
     if (user.id === id) {
       found = true;
       return res.json(user);
     }
   })
   if (!found) {
-    res.status(400).json("not found");
+    res.status(404).json("not found");
   }
 })
 
+app.put('/image', (req, res) => {
+  // 1st: locate the user to update their entries
+  // const { id } = req.params; ---------> Instead of params, we need the body info
+  const { id } = req.body;  // receive user id from the body
+  let found = false;
+  database.users.forEach(user => {  // forEach; not creating a new array
+    if (user.id === id) {
+      found = true; // once found,  
+      user.entries++; // increase their entries
+      return res.json(user.entries);  // and return the new updated amount of entries submitted
+    }
+  })
+  if (!found) {
+    res.status(400).json("not found");
+  }
+})
 
 app.listen(3000, () => {
   console.log("sanity check; server listening on port 3000");
