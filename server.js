@@ -44,7 +44,7 @@ app.post("/signin", (req, res) => {
     req.body.email === database.users[0].email &&
     req.body.password === database.users[0].password
   ) {
-    res.json("signin success");
+    res.json("success"); // will use this comment to sign in later...
   } else {
     res.status(400).json("error logging in");
   }
