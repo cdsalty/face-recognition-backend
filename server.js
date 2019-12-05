@@ -44,7 +44,8 @@ app.post("/signin", (req, res) => {
     req.body.email === database.users[0].email &&
     req.body.password === database.users[0].password
   ) {
-    res.json("success"); // will use this comment to sign in later...
+    // res.json("success"); // will use this comment to sign in later...
+    res.json(database.users[0]);
   } else {
     res.status(400).json("error logging in");
   }
@@ -61,12 +62,12 @@ app.post("/register", (req, res) => {
     // name: 'John',
     name: name, // making use of object destructuring
     email: email,
-    password: password,
+    // password: password,    --- don't need the user's password being returned after registering
     entries: 0,
     joined: new Date()
   });
   // ALWAYS REMEMBER THE RESPONSE (here, grab the last item in the array)
-  res.json(database.users[database.users.length - 1]); // the response is the new user created
+  res.json(database.users[database.users.length - 1]); // the response is the new user created, which will be the last user created in the list
 });
 // Get the user for their homepage
 app.get("/profile/:id", (req, res) => {
