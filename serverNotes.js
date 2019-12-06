@@ -29,15 +29,22 @@ const database = {
 };
 
 app.get("/", (req, res) => {
+  // res.send("res send is sending this from app dot get"); // verified via Postman
   res.send(database.users);
 });
 
+1;
 // first step in connecting back to front, start with the sign in route
+
 app.post("/signin", (req, res) => {
+  // res.send("signing in...");  // but we need it in json
+  // the user's response will come back in the request. This response needs to be verified it matches
+  // ** BODY-PARCER (remember, to read the request, we need to parce it using body-parcer) **
   if (
     req.body.email === database.users[0].email &&
     req.body.password === database.users[0].password
   ) {
+    // res.json("success"); // will use this comment to sign in later...
     res.json(database.users[0]);
   } else {
     res.status(400).json("error logging in");
