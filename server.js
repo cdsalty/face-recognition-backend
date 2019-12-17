@@ -1,7 +1,22 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+// const bcrypt = require("bcrypt-nodejs");
 const cors = require("cors");
+const knex = require("knex");
+
+// knex({
+const postgres = knex({
+  client: "pg",
+  connection: {
+    host: "127.0.0.1",
+    user: "christopher",
+    password: "",
+    database: "smart-brain"
+  }
+});
+console.log(postgres.select("*").from("users"));
+// postgres.select("*").from("users");
 
 // MIDDLEWARE
 app.use(bodyParser.json()); // in order to send data to the front end, it must be parsed
@@ -67,7 +82,7 @@ app.get("/profile/:id", (req, res) => {
   const { id } = req.params;
   let found = false;
   database.users.forEach(user => {
-    // forEach; not creating a new array
+    // forEach since not creating a new array
     if (user.id === id) {
       found = true;
       return res.json(user);
