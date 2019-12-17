@@ -5,8 +5,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const knex = require("knex");
 
-// knex({
-const postgres = knex({
+// originally was const postgres but changed everything to 'db' to be less confusing
+const db = knex({
   client: "pg",
   connection: {
     host: "127.0.0.1",
@@ -15,13 +15,20 @@ const postgres = knex({
     database: "smart-brain"
   }
 });
-console.log(postgres.select("*").from("users"));
-// postgres.select("*").from("users");
+// console.log(db.select("*").from("users"));
+// db.select("*").from("users") alone will return a promise.
+// db.select("*")
+//   .from("users")
+//   .then(data => {
+// don't have to use json since we aren't using HTTP
+//   console.log(data); // should get an empty array in the node terminal and we do!
+// });
 
 // MIDDLEWARE
 app.use(bodyParser.json()); // in order to send data to the front end, it must be parsed
 app.use(cors()); // gives the ability to work around cors issues.
 
+// will remove later...
 const database = {
   users: [
     {

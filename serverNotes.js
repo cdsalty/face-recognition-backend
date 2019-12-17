@@ -51,21 +51,14 @@ app.post("/signin", (req, res) => {
   }
 });
 
+// ONCE READY TO CONNECT TO DATABASE:
+// - remove what's being pushed...
+
 // When a new user is created: (the user registration form requires a name, email and password)
 app.post("/register", (req, res) => {
   // get email password and name from req.body
   const { email, password, name } = req.body; // information the user is submitting
-  // to create a new user
-  database.users.push({
-    // get the user's info and add it to the database
-    id: "125",
-    // name: 'John',
-    name: name, // making use of object destructuring
-    email: email,
-    // password: password,    --- don't need the user's password being returned after registering
-    entries: 0,
-    joined: new Date()
-  });
+  // refer to knex documentation for creating a new user:
   // ALWAYS REMEMBER THE RESPONSE (here, grab the last item in the array)
   res.json(database.users[database.users.length - 1]); // the response is the new user created, which will be the last user created in the list
 });
@@ -106,3 +99,20 @@ app.put("/image", (req, res) => {
 app.listen(3000, () => {
   console.log("sanity check; server listening on port 3000");
 });
+
+// INSIDE THE REGISTER ROUTE, I COMPLETELY REMOVED THE DATA THAT WAS IN THERE IN ORDER TO WORK WITH DATABASE
+// Originally structure:
+/*
+REMOVED:
+database.users.push({
+    // get the user's info and add it to the database
+    id: "125",
+    // name: 'John',
+    name: name, // making use of object destructuring
+    email: email,
+    // password: password,    --- don't need the user's password being returned after registering
+    entries: 0,
+    joined: new Date()
+  });
+
+*/
