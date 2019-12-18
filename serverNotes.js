@@ -58,7 +58,8 @@ app.post("/signin", (req, res) => {
 app.post("/register", (req, res) => {
   // get email password and name from req.body
   const { email, password, name } = req.body; // information the user is submitting
-  // refer to knex documentation for creating a new user:
+  // refer to knex documentation for creating a new user: url: http://knexjs.org/#Builder-insert
+
   // ALWAYS REMEMBER THE RESPONSE (here, grab the last item in the array)
   res.json(database.users[database.users.length - 1]); // the response is the new user created, which will be the last user created in the list
 });
@@ -114,5 +115,28 @@ database.users.push({
     entries: 0,
     joined: new Date()
   });
+
+*/
+
+/*
+pp.post("/register", (req, res) => {
+  // get email password and name from req.body
+  const { email, password, name } = req.body; // information the user is submitting
+  // Add users once they enter; (inserting what comes from user registration)
+  db("users")
+    .insert({
+      email: email,
+      name: name,
+      joined: new Date()
+    })
+    .then(console.log); // to see what we get back...
+  // in the server, I see the result which shows the 'insert' command and my new row count
+  // in postman, the data entered was Ann but the data returned was for Sally, the original store user
+  // **** HOWEVER, in the terminal, SELECT * FROM users; will return Ann, ann@gmail.com entries and date!!
+
+  // ALWAYS REMEMBER THE RESPONSE (here, grab the last item in the array)
+  // HERE, we don't use res.json(d...) because KNEX comes with RETURNING which provides all this
+  res.json(database.users[database.users.length - 1]); // the response is the new user created, which will be the last user created in the list
+});
 
 */

@@ -6,6 +6,7 @@ const cors = require("cors");
 const knex = require("knex");
 
 // originally was const postgres but changed everything to 'db' to be less confusing
+// knex building the db for postgres
 const db = knex({
   client: "pg",
   connection: {
@@ -70,19 +71,20 @@ app.post("/signin", (req, res) => {
 app.post("/register", (req, res) => {
   // get email password and name from req.body
   const { email, password, name } = req.body; // information the user is submitting
-  // to create a new user
-  database.users.push({
-    // get the user's info and add it to the database
-    id: "125",
-    // name: 'John',
-    name: name, // making use of object destructuring
-    email: email,
-    // password: password,    --- don't need the user's password being returned after registering
-    entries: 0,
-    joined: new Date()
-  });
-  // ALWAYS REMEMBER THE RESPONSE (here, grab the last item in the array)
-  res.json(database.users[database.users.length - 1]); // the response is the new user created, which will be the last user created in the list
+  // Add users once they enter; (inserting what comes from user registration)
+  db("users")
+    .returning("*") // users 'insert' and return back all the columns
+    .insert({
+      email: email,
+      name: name,
+      joined: new Date()
+    })
+    // .then(console.log); // to see what we get back...
+    .then(user => {
+      res.json(user[0]); // user is new user created; should only be one so returning the first,[0]
+    })
+    // now if you try to sign up same user twice, get 400 error
+    .catch(err => res.status(400).json("Sorry, Unable to register")); // if you use .json(err), you will return back to the user all the key information missing from the error message: NOT GOOD
 });
 // Get the user for their homepage
 app.get("/profile/:id", (req, res) => {
