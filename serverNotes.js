@@ -139,4 +139,25 @@ pp.post("/register", (req, res) => {
   res.json(database.users[database.users.length - 1]); // the response is the new user created, which will be the last user created in the list
 });
 
+
+
+ORIGINAL SETUP FOR GETTING USER PROFILES AT ./profile/:id (before connecting backend and database)
+// Get the user for their homepage
+app.get("/profile/:id", (req, res) => {
+  const { id } = req.params;
+  let found = false;
+  database.users.forEach(user => {
+    // forEach since not creating a new array
+    if (user.id === id) {
+      found = true;
+      return res.json(user);
+    }
+  });
+  if (!found) {
+    res.status(404).json("not found");
+  }
+});
+
+
+
 */

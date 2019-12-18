@@ -6,7 +6,7 @@ const cors = require("cors");
 const knex = require("knex");
 
 // originally was const postgres but changed everything to 'db' to be less confusing
-// knex building the db for postgres
+// knex building the db for postgres (CONNECTING)
 const db = knex({
   client: "pg",
   connection: {
@@ -89,17 +89,29 @@ app.post("/register", (req, res) => {
 // Get the user for their homepage
 app.get("/profile/:id", (req, res) => {
   const { id } = req.params;
-  let found = false;
-  database.users.forEach(user => {
-    // forEach since not creating a new array
-    if (user.id === id) {
-      found = true;
-      return res.json(user);
-    }
-  });
-  if (!found) {
-    res.status(404).json("not found");
-  }
+  // let found = false; by removing, it will return a blank array if not found
+  db.select("*")
+    .from("users")
+    .where({
+      // on first log, it returned all users so added the "WHERE"
+      id: id // id will be in the url, localhost.3000/profile/2 and 2 would be the id
+      // in postman, ran localhost:3000/profile/1 and THIS RETURNS ONLY ONE USER WITH ID 1
+    })
+    .then(user => {
+      // console.log(user);
+      if (user.length) {
+        // so if it has any length, then user must exist
+        res.json(user[0]);
+      } else {
+        res.status(400).json("No user found");
+      }
+      // (verify via postman) & in the console,
+      // console.log(user); // returns an array with the object inside
+      // console.log(user[0]); // returns the object array only
+      // NOW to work on the actual response...
+      // res.json(user[0]); // now I get Ann back in the response via postman; what to use this info for...
+    })
+    .catch(err => res.status(400).json("error getting user")); // if not found
 });
 
 app.put("/image", (req, res) => {
